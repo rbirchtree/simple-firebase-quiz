@@ -12,7 +12,7 @@ export default function Question(props) {
                     <option value={answers[1]}>{answers[1]}</option>
                     <option value={answers[2]}>{answers[2]}</option>
                 </select>
-                <button >Submit</button>    
+                <button onSubmit={ e => this.onSubmit}>Submit</button>    
         </div>
     );
 };

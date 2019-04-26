@@ -10,10 +10,13 @@ class App extends Component {
     super();
     this.state = {
       display: 'quiz',
-      questionRendered : null
+      questionRendered : null,
+      value: 'placeholder',
+      items:null
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.change = this.change.bind(this);
   }
   handleChange(e) {
     this.setState({
@@ -21,17 +24,17 @@ class App extends Component {
     });
   }
 
+  change(event){
+    this.setState({value: event.currentTarget.value});
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     const itemsRef = firebase.database().ref('items');
-    const item = {
-      title: this.state.currentItem,
-      user: this.state.username
-    }
-    itemsRef.push(item);
+    let {value} =this.state;
+    itemsRef.push(value);
     this.setState({
-      currentItem: '',
-      username: ''
+      value
     });
   }
   componentDidMount() {
@@ -53,19 +56,40 @@ class App extends Component {
       questionRendered
     })
     const itemsRef = firebase.database().ref('items');
+    let RockiesVotes = 0;
+    let RaysVotes = 0;
+    let CubsVotes = 0;
+    let vote1337 = 0;
+    let vote42 = 0;
+    let vote1 = 0;
     itemsRef.on('value', (snapshot) => {
+      
       let items = snapshot.val();
       let newState = [];
-      for (let item in items) {
-        newState.push({
-          id: item,
-          title: items[item].title,
-          user: items[item].user
-        });
+      for (let item in items){
+      
+        if (items[item] === 'Rockies'){
+          RockiesVotes++;
+        }
+        if (items[item] === 'Rays'){
+          RaysVotes++;
+        }
+        if (items[item] === 'Cubs'){
+          CubsVotes++;
+        }
+        if (items[item] == 1337){
+          vote1337++;
+        }
+        if (items[item] == 42){
+          vote42++;
+        }
+        if (items[item] == 1){
+          vote1++;
+        }
       }
-      this.setState({
-        items: newState
-      });
+      console.log(CubsVotes,'cubs')
+      console.log(vote42,'votes');
+      console.log(items,'items')
     });
   }
 
@@ -74,17 +98,27 @@ class App extends Component {
     const itemRef = firebase.database().ref(`/items/${itemId}`);
     itemRef.remove();
   }
-  addedVote(vote){
-
-  }
 
   render() {
-      console.log(this.state)
+    console.log('this value', this.state.value);
       if (this.state.questionRendered === null){
         return (<h1>Loading...</h1>)
       } else{
-        return (<Question onSubmit={this.handleSubmit} text={this.state.questionRendered}/>)
-      }
+        const {question, answers} = this.state.questionRendered;
+        return (        
+        <div className="card">
+        <p> {question}</p>
+          <form onSubmit={this.handleSubmit}>
+            <select onChange={this.change} name="question">
+                <option value={answers[0]}>{answers[0]}</option>
+                <option value={answers[1]}>{answers[1]}</option>
+                <option value={answers[2]}>{answers[2]}</option>
+            </select>
+            <button onSubmit={ e => this.onSubmit}>Submit</button>    
+          </form>          
+       </div>
+    )
+    }
   }
 }
 export default App;
