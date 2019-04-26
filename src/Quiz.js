@@ -93,4 +93,3 @@ export default class Quiz extends React.Component {
       )
     }
   }
-© 2019 Git
