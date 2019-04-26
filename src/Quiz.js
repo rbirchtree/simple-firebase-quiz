@@ -43,7 +43,6 @@ export default class Quiz extends React.Component {
         if(!this.state.answerSelected){
             return;
         }
-        alert('Thanks for participating!!!');
         this.setState(this.getInitialState());
     }
     submitAnswer = (questionId, answerSelected) =>{
